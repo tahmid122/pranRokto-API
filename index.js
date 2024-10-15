@@ -230,9 +230,9 @@ app.post("/donor/update/:number", async (req, res) => {
     womenNumber,
   } = req.body;
   const { district, upazilla, address } = req.body.presentAddress;
-
+  const findNumUser = await donorsData.findOne({ mobile: number });
   try {
-    if (number === mobile) {
+    if (number === findNumUser.mobile) {
       const findDonor = await donorsData.findOneAndUpdate(
         { mobile: number },
         {
