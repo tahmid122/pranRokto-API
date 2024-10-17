@@ -75,9 +75,16 @@ const donors = new mongoose.Schema({
   dob: Date,
   password: String,
 });
+const chatBox = new mongoose.Schema({
+  name: String,
+  image: String,
+  message: String,
+  mobile: String,
+});
 //Model
 const univercel = new mongoose.model("univercelData", univercelDatas);
 const donorsData = new mongoose.model("donorsData", donors);
+const chatBoxMsg = new mongoose.model("chatBoxMsg", chatBox);
 //passport
 const JwtStrategy = require("passport-jwt").Strategy,
   ExtractJwt = require("passport-jwt").ExtractJwt;
@@ -99,6 +106,25 @@ passport.use(
   })
 );
 //Routes
+//chatbox
+app.post("/chatbox", async (req, res) => {
+  const { name, image, message, mobile } = req.body;
+  try {
+    const newMessage = await new chatBoxMsg({ name, image, message, mobile });
+    await newMessage.save();
+    res.status(201).send(newMessage);
+  } catch (error) {
+    res.status(400).send({ msg: error.message });
+  }
+});
+app.get("/chatbox", async (req, res) => {
+  try {
+    const message = await chatBoxMsg.find({});
+    res.status(201).send(message);
+  } catch (error) {
+    res.status(400).send({ msg: error.message });
+  }
+});
 //Profile->Done
 app.get(
   "/profile",
@@ -232,7 +258,7 @@ app.post("/donor/update/:number", async (req, res) => {
   const { district, upazilla, address } = req.body.presentAddress;
   const findNumUser = await donorsData.findOne({ mobile: number });
   try {
-    if (number === findNumUser.mobile) {
+    if (findNumUser) {
       const findDonor = await donorsData.findOneAndUpdate(
         { mobile: number },
         {
