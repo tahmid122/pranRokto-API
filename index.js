@@ -117,6 +117,7 @@ const opts = {};
 opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
 opts.secretOrKey = process.env.SECRET_KEY;
 passport.use(
+  "donor-jwt",
   new JwtStrategy(opts, async function (jwt_payload, done) {
     try {
       const donor = await donorsData.findOne({ _id: jwt_payload.id });
@@ -130,20 +131,25 @@ passport.use(
     }
   })
 );
-// passport.use(
-//   new JwtStrategy(opts, async function (jwt_payload, done) {
-//     try {
-//       const donor = await adminLogin.findOne({ _id: jwt_payload.id });
-//       if (donor) {
-//         return done(null, donor);
-//       } else {
-//         return done(null, false);
-//       }
-//     } catch (err) {
-//       return done(err, false);
-//     }
-//   })
-// );
+//admin
+const adminopts = {};
+adminopts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
+adminopts.secretOrKey = process.env.SECRET_KEY;
+passport.use(
+  "admin-jwt",
+  new JwtStrategy(adminopts, async function (jwt_payload, done) {
+    try {
+      const donor = await adminLogin.findOne({ _id: jwt_payload.id });
+      if (donor) {
+        return done(null, donor);
+      } else {
+        return done(null, false);
+      }
+    } catch (err) {
+      return done(err, false);
+    }
+  })
+);
 //Routes
 //admin login
 app.post("/admin-login", async (req, res) => {
