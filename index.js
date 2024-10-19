@@ -130,20 +130,20 @@ passport.use(
     }
   })
 );
-passport.use(
-  new JwtStrategy(opts, async function (jwt_payload, done) {
-    try {
-      const donor = await adminLogin.findOne({ _id: jwt_payload.id });
-      if (donor) {
-        return done(null, donor);
-      } else {
-        return done(null, false);
-      }
-    } catch (err) {
-      return done(err, false);
-    }
-  })
-);
+// passport.use(
+//   new JwtStrategy(opts, async function (jwt_payload, done) {
+//     try {
+//       const donor = await adminLogin.findOne({ _id: jwt_payload.id });
+//       if (donor) {
+//         return done(null, donor);
+//       } else {
+//         return done(null, false);
+//       }
+//     } catch (err) {
+//       return done(err, false);
+//     }
+//   })
+// );
 //Routes
 //admin login
 app.post("/admin-login", async (req, res) => {
