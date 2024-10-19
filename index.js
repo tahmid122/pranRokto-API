@@ -320,6 +320,17 @@ app.get(
     }
   }
 );
+app.get(
+  "/admin",
+  passport.authenticate("jwt", { session: false }),
+  function (req, res) {
+    try {
+      res.send({ verifiedUser: true });
+    } catch (error) {
+      res.send({ verifiedUser: false });
+    }
+  }
+);
 //Univercel Data-> Done
 app.post("/univercelData", async (req, res) => {
   const newData = await new univercel({
