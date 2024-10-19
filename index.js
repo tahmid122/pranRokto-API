@@ -81,10 +81,35 @@ const chatBox = new mongoose.Schema({
   message: String,
   mobile: String,
 });
+const preReviewSchema = new mongoose.Schema({
+  name: String,
+  image: String,
+  bloodGroup: String,
+  address: String,
+  message: String,
+  womenNumber: String,
+  mobile: String,
+});
+const mainReviewSchema = new mongoose.Schema({
+  name: String,
+  image: String,
+  bloodGroup: String,
+  address: String,
+  message: String,
+  womenNumber: String,
+  mobile: String,
+});
+const adminDetails = new mongoose.Schema({
+  mobile: String,
+  password: String,
+});
 //Model
 const univercel = new mongoose.model("univercelData", univercelDatas);
 const donorsData = new mongoose.model("donorsData", donors);
 const chatBoxMsg = new mongoose.model("chatBoxMsg", chatBox);
+const preReviews = new mongoose.model("preReviews", preReviewSchema);
+const mainReviews = new mongoose.model("mainReviews", mainReviewSchema);
+const adminLogin = new mongoose.model("adminLogin", adminDetails);
 //passport
 const JwtStrategy = require("passport-jwt").Strategy,
   ExtractJwt = require("passport-jwt").ExtractJwt;
@@ -105,7 +130,165 @@ passport.use(
     }
   })
 );
+passport.use(
+  new JwtStrategy(opts, async function (jwt_payload, done) {
+    try {
+      const donor = await adminLogin.findOne({ _id: jwt_payload.id });
+      if (donor) {
+        return done(null, donor);
+      } else {
+        return done(null, false);
+      }
+    } catch (err) {
+      return done(err, false);
+    }
+  })
+);
 //Routes
+//admin login
+app.post("/admin-login", async (req, res) => {
+  const { mobile, password } = req.body;
+
+  const findUser = await adminLogin.findOne({ mobile: mobile });
+
+  try {
+    if (findUser) {
+      bcrypt.compare(password, findUser.password, (err, isMatch) => {
+        if (err) throw err;
+        if (isMatch) {
+          const payload = {
+            id: findUser._id,
+            mobile: mobile,
+          };
+          const token = jwt.sign(payload, process.env.SECRET_KEY);
+          res.status(200).send({ token: "Bearer " + token, mobile: mobile });
+        } else {
+          res.status(200).send({ msg: "Passwords do not match." });
+        }
+      });
+    }
+  } catch (error) {
+    console.log(error.message);
+  }
+});
+//reset pass
+app.post("/changed-password/:number", async (req, res) => {
+  const { number } = req.params;
+  const { password } = req.body;
+
+  try {
+    bcrypt.hash(password, saltRounds, async (err, hashedPassword) => {
+      if (err) throw err;
+      const findDonorAndUpdate = await donorsData.findOneAndUpdate(
+        {
+          mobile: number,
+        },
+        { password: hashedPassword }
+      );
+
+      res.status(201).send({ msg: "Successfully changed" });
+    });
+  } catch (error) {
+    res.status(400).send({ msg: error.message });
+  }
+});
+//main-review
+app.post("/main-review", async (req, res) => {
+  const { image, bloodGroup, address, message, mobile, womenNumber, name } =
+    req.body;
+  const findReview = await mainReviews.findOne({ mobile: mobile });
+  const findReviewWomen = await mainReviews.findOne({ womenNumber: mobile });
+  if (findReview || findReviewWomen) {
+    res.status(400).send({ msg: "Already have a review" });
+  } else {
+    try {
+      const newReviews = await new mainReviews({
+        image,
+        bloodGroup,
+        address,
+        message,
+        mobile,
+        womenNumber,
+        name,
+      });
+      await newReviews.save();
+      res
+        .status(201)
+        .send({ succuess: true, message: "Review posted successfully" });
+    } catch (error) {
+      res.status(400).send({ error: error.message });
+    }
+  }
+});
+app.get("/main-review", async (req, res) => {
+  try {
+    const allReviews = await mainReviews.find({});
+    res.status(201).send(allReviews);
+  } catch (error) {
+    res.status(400).send({ error: error.message });
+  }
+});
+
+//reviews
+app.post("/pre-review", async (req, res) => {
+  const { image, bloodGroup, address, message, mobile, womenNumber, name } =
+    req.body;
+  const findReview = await preReviews.findOne({ mobile: mobile });
+  const findReviewWomen = await preReviews.findOne({ womenNumber: mobile });
+  if (findReview || findReviewWomen) {
+    res.status(400).send({ msg: "Already have a review" });
+  } else {
+    try {
+      const newReviews = await new preReviews({
+        image,
+        bloodGroup,
+        address,
+        message,
+        mobile,
+        womenNumber,
+        name,
+      });
+      await newReviews.save();
+      res
+        .status(201)
+        .send({ succuess: true, message: "Review posted successfully" });
+    } catch (error) {
+      res.status(400).send({ error: error.message });
+    }
+  }
+});
+app.get("/pre-review", async (req, res) => {
+  try {
+    const allReviews = await preReviews.find({});
+    res.status(201).send(allReviews);
+  } catch (error) {
+    res.status(400).send({ error: error.message });
+  }
+});
+app.get("/pre-review/:number", async (req, res) => {
+  const { number } = req.params;
+  const findReview = await preReviews.findOne({ mobile: number });
+  const findReviewWomen = await preReviews.findOne({ womenNumber: number });
+  if (findReview) {
+    res.status(201).send(findReview);
+  } else {
+    res.status(201).send(findReviewWomen);
+  }
+});
+app.delete("/pre-review/:number", async (req, res) => {
+  const { number } = req.params;
+  const findReview = await preReviews.findOne({ mobile: number });
+  const findReviewWomen = await preReviews.findOne({ womenNumber: number });
+  if (findReview) {
+    const deleteReview = await preReviews.findOneAndDelete({ mobile: number });
+    res.status(201).send({ msg: "Succesfully Deleted" });
+  } else {
+    const deleteReview = await preReviews.findOneAndDelete({
+      womenNumber: number,
+    });
+    res.status(201).send({ msg: "Succesfully Deleted" });
+  }
+});
 //chatbox
 app.post("/chatbox", async (req, res) => {
   const { name, image, message, mobile } = req.body;
@@ -311,14 +494,26 @@ app.post(
   upload.single("image"),
   async (req, res) => {
     const { number } = req.params;
-    const findDonor = await donorsData.findOneAndUpdate(
-      { mobile: number },
-      {
-        image: req.file.path,
-      },
-      { new: true }
-    );
-    res.status(200).send(findDonor);
+    const findDonorMobile = await donorsData.findOne({ mobile: number });
+    if (findDonorMobile) {
+      const findDonor = await donorsData.findOneAndUpdate(
+        { mobile: number },
+        {
+          image: req.file.path,
+        },
+        { new: true }
+      );
+      res.status(200).send(findDonor);
+    } else {
+      const findDonor = await donorsData.findOneAndUpdate(
+        { womenNumber: number },
+        {
+          image: req.file.path,
+        },
+        { new: true }
+      );
+      res.status(200).send(findDonor);
+    }
   }
 );
 //Login-> Done
