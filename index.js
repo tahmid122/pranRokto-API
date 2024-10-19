@@ -317,7 +317,7 @@ app.get("/chatbox", async (req, res) => {
 //Profile->Done
 app.get(
   "/profile",
-  passport.authenticate("jwt", { session: false }),
+  passport.authenticate("donor-jwt", { session: false }),
   function (req, res) {
     try {
       res.send({ verifiedUser: true });
@@ -328,7 +328,7 @@ app.get(
 );
 app.get(
   "/admin",
-  passport.authenticate("jwt", { session: false }),
+  passport.authenticate("admin-jwt", { session: false }),
   function (req, res) {
     try {
       res.send({ verifiedUser: true });
