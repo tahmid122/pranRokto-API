@@ -234,7 +234,16 @@ app.get("/main-review", async (req, res) => {
     res.status(400).send({ error: error.message });
   }
 });
-
+app.get("/main-review/:number", async (req, res) => {
+  const { number } = req.params;
+  const findReview = await mainReviews.findOne({ mobile: number });
+  const findReviewWomen = await mainReviews.findOne({ womenNumber: number });
+  if (findReview) {
+    res.status(201).send(findReview);
+  } else {
+    res.status(201).send(findReviewWomen);
+  }
+});
 //reviews
 app.post("/pre-review", async (req, res) => {
   const { image, bloodGroup, address, message, mobile, womenNumber, name } =
