@@ -6,26 +6,29 @@ Built with **Node.js**, **Express.js**, and **MongoDB**, this backend provides a
 
 ---
 
+## 🩸 Client
+
+🔗[**Client Repository**](https://github.com/tahmid122/Pran-Rokto)
+
 ## ⚙️ Technologies Used
 
-| Package/Tool              | Version       | Purpose                           |
-|---------------------------|---------------|-----------------------------------|
-| Node.js                   | ≥18.x         | Runtime                           |
-| Express.js                | ^4.21.0       | Server framework                  |
-| MongoDB (native)          | ^6.9.0        | Database                          |
-| Mongoose                  | ^8.6.3        | ODM for MongoDB                   |
-| Bcrypt.js                 | ^2.4.3        | Password hashing                  |
-| JSON Web Token (JWT)      | ^9.0.2        | Authentication                    |
-| Passport & Passport-JWT   | ^0.7.0 / ^4.0.1 | Auth strategies                   |
-| Multer + Cloudinary       | ^1.4.5 / ^1.41.3 | Image upload & hosting           |
-| Multer-Cloudinary         | ^4.0.0        | Cloudinary adapter for Multer     |
-| Dotenv                    | ^16.4.5       | Environment variable management   |
-| CORS                      | ^2.8.5        | Cross-origin resource sharing     |
-| Body-parser               | ^1.20.3       | Parsing incoming requests         |
-| Nodemon                   | ^3.1.7        | Auto-restarting during development|
+| Package/Tool            | Version          | Purpose                            |
+| ----------------------- | ---------------- | ---------------------------------- |
+| Node.js                 | ≥18.x            | Runtime                            |
+| Express.js              | ^4.21.0          | Server framework                   |
+| MongoDB (native)        | ^6.9.0           | Database                           |
+| Mongoose                | ^8.6.3           | ODM for MongoDB                    |
+| Bcrypt.js               | ^2.4.3           | Password hashing                   |
+| JSON Web Token (JWT)    | ^9.0.2           | Authentication                     |
+| Passport & Passport-JWT | ^0.7.0 / ^4.0.1  | Auth strategies                    |
+| Multer + Cloudinary     | ^1.4.5 / ^1.41.3 | Image upload & hosting             |
+| Multer-Cloudinary       | ^4.0.0           | Cloudinary adapter for Multer      |
+| Dotenv                  | ^16.4.5          | Environment variable management    |
+| CORS                    | ^2.8.5           | Cross-origin resource sharing      |
+| Body-parser             | ^1.20.3          | Parsing incoming requests          |
+| Nodemon                 | ^3.1.7           | Auto-restarting during development |
 
 ---
-
 
 ---
 
@@ -38,6 +41,7 @@ git clone https://github.com/tahmid122/pranRokto-API.git
 cd pranRokto-API
 npm install
 ```
+
 ### 2. Install dependencies
 
 ```bash
@@ -45,6 +49,7 @@ npm install
 ```
 
 ### 3. Create .env file
+
 Create a .env file in the apipranrokto directory and add the following:
 
 ```bash
@@ -88,12 +93,12 @@ npm start
 ## 🧪 Tools & Postman
 
 For testing routes:
+
 - Use Postman
 - Pass Authorization: Bearer <token> in headers for protected routes
-  
+
 ## 📝Author
 
 - Name: **Tahmid Alam**
 - GitHub: [@tahmid122](www.github.com/tahmid122)
 - Email: <mdtahmidalam122@gmail.com>
-
