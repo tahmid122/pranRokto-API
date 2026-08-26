@@ -13,7 +13,7 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 //default settings
-app.use(cors());
+app.use(cors({ origin: ["https://pran-rokto.vercel.app"], credentials: true }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 //connection
@@ -129,7 +129,7 @@ passport.use(
     } catch (err) {
       return done(err, false);
     }
-  })
+  }),
 );
 //admin
 const adminopts = {};
@@ -148,7 +148,7 @@ passport.use(
     } catch (err) {
       return done(err, false);
     }
-  })
+  }),
 );
 //Routes
 //admin login
@@ -189,7 +189,7 @@ app.post("/changed-password/:number", async (req, res) => {
         {
           mobile: number,
         },
-        { password: hashedPassword }
+        { password: hashedPassword },
       );
 
       res.status(201).send({ msg: "Successfully changed" });
@@ -333,7 +333,7 @@ app.get(
     } catch (error) {
       res.send({ verifiedUser: false });
     }
-  }
+  },
 );
 app.get(
   "/admin",
@@ -344,7 +344,7 @@ app.get(
     } catch (error) {
       res.send({ verifiedUser: false });
     }
-  }
+  },
 );
 //Univercel Data-> Done
 app.post("/univercelData", async (req, res) => {
@@ -375,7 +375,7 @@ app.post("/upazilla", async (req, res) => {
 
     // Filter the upazillas array to return only the matching upazilla
     const matchedUpazillas = findData.upazillas.filter(
-      (upazilla) => upazilla.district_id === req.body.upazilla
+      (upazilla) => upazilla.district_id === req.body.upazilla,
     );
 
     res.status(200).send(matchedUpazillas); // Return only the matched upazillas
@@ -397,7 +397,7 @@ app.post("/getDistrict", async (req, res) => {
 
   // Filter the upazillas array to return only the matching upazilla
   const matchedDistrict = findDistrict.districts.filter(
-    (district) => district.id === req.body.districtNumber
+    (district) => district.id === req.body.districtNumber,
   );
 
   res.status(200).send(matchedDistrict); // Return only the matched upazillas
@@ -485,7 +485,7 @@ app.post("/donor/update/:number", async (req, res) => {
             address,
           },
         },
-        { new: true }
+        { new: true },
       );
       res.status(200).send(findDonor);
     } else {
@@ -506,7 +506,7 @@ app.post("/donor/update/:number", async (req, res) => {
             address,
           },
         },
-        { new: true }
+        { new: true },
       );
       res.status(200).send(findDonor);
     }
@@ -527,7 +527,7 @@ app.post(
         {
           image: req.file.path,
         },
-        { new: true }
+        { new: true },
       );
       res.status(200).send(findDonor);
     } else {
@@ -536,11 +536,11 @@ app.post(
         {
           image: req.file.path,
         },
-        { new: true }
+        { new: true },
       );
       res.status(200).send(findDonor);
     }
-  }
+  },
 );
 //Login-> Done
 app.post("/login", async (req, res) => {
@@ -598,7 +598,7 @@ app.post("/manage-date/:number", async (req, res) => {
       lastDonationDate: req.body.date,
       note: req.body.note,
     },
-    { new: true }
+    { new: true },
   );
   res.status(200).send(findUser);
 });
@@ -621,7 +621,7 @@ app.post("/change-password/:number", async (req, res) => {
             findUser.password = hashedPassword;
             findUser.save();
             res.status(200).send({ msg: "Successfully Changed the password" });
-          }
+          },
         );
         //
       } else {
