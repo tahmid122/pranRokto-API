@@ -14,6 +14,7 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 //default settings
 app.use(cors({ origin: ["https://pran-rokto.vercel.app"], credentials: true }));
+//master
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 //connection
